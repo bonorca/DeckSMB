@@ -153,6 +153,7 @@ class Plugin:
             await self._run("firewall-cmd --zone=public --add-service=samba --permanent")
             await self._run("firewall-cmd --zone=public --add-service=mdns --permanent")
             await self._run("firewall-cmd --zone=public --add-port=3702/udp --permanent")
+            await self._run("firewall-cmd --zone=public --add-port=5357/tcp --permanent")
             await self._run("firewall-cmd --reload")
             steps.append("firewall_configured")
 
