@@ -20,6 +20,8 @@ class Plugin:
             decky.DECKY_PLUGIN_SETTINGS_DIR, "settings.json")
         self.wsdd_path = os.path.join(
             decky.DECKY_PLUGIN_DIR, "py_modules", "wsdd.py")
+        self.hash_path = os.path.join(
+            decky.DECKY_PLUGIN_SETTINGS_DIR, "nt_hash")
         self._installing = False
         try:
             self.settings = self._load_setting()
@@ -284,10 +286,18 @@ class Plugin:
                 f"smbpasswd result: rc={process.returncode}, stdout={stdout.decode().strip()}, stderr={stderr.decode().strip()}")
             if process.returncode != 0:
                 return {"success": False, "error": stderr.decode().strip()}
+            await self._backup_password()
             return {"success": True}
         except Exception as e:
             decky.logger.error(f"Set password failed: {e}")
             return {"success": False, "error": str(e)}
+
+    async def _backup_password(self):
+        rc, out, _ = await self._run("pdbedit -L -w -u deck")
+        if rc != 0:
+            return
+        self._write_file(self.hash_path, out.split(":")[3])
+        os.chmod(self.hash_path, 0o600)
 
     async def remove_share(self, name: str) -> dict:
 
