@@ -143,6 +143,10 @@ class Plugin:
                 stderr=asyncio.subprocess.PIPE,
             )
             await process.communicate(input=b"0000\n0000\n")
+            if os.path.exists(self.hash_path):
+                with open(self.hash_path, "r") as f:
+                    nt_hash = f.read().strip()
+                await self._run(f"pdbedit -u deck --set-nt-hash={nt_hash}")
             steps.append("password_set")
 
             await decky.emit("install_progress", "Configuring firewall...")
