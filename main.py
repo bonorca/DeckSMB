@@ -122,6 +122,15 @@ class Plugin:
                 return {"success": False, "error": f"Failed to install samba: {stderr}"}
             steps.append("samba_installed")
 
+            await decky.emit("install_progress", "Configuring samba...")
+            if not self.settings.get("shares"):
+                self.settings["shares"] = [
+                    {"name": "home", "path": "/home/deck", "enabled": True}
+                ]
+                self._save_setting()
+            await self._write_smb_conf()
+            steps.append("conf_written")
+
             # default password
             await decky.emit("install_progress", "Setting default password...")
             process = await asyncio.create_subprocess_exec(
@@ -133,15 +142,6 @@ class Plugin:
             )
             await process.communicate(input=b"0000\n0000\n")
             steps.append("password_set")
-
-            await decky.emit("install_progress", "Configuring samba...")
-            if not self.settings.get("shares"):
-                self.settings["shares"] = [
-                    {"name": "home", "path": "/home/deck", "enabled": True}
-                ]
-                self._save_setting()
-            await self._write_smb_conf()
-            steps.append("conf_written")
 
             await decky.emit("install_progress", "Configuring firewall...")
             await self._run("firewall-cmd --zone=public --add-service=samba --permanent")
