@@ -262,7 +262,7 @@ class Plugin:
         self.settings["shares"] = shares
         self._save_setting()
         await self._write_smb_conf()
-        await self._run("systemctl reload-or-restart smb")
+        await self._run("systemctl try-reload-or-restart smb")
         await self._run("smbcontrol all reload-config")
         decky.logger.info("smb restarted because of add share")
         return {"success": True}
@@ -301,7 +301,7 @@ class Plugin:
         self.settings["shares"] = shares
         self._save_setting()
         await self._write_smb_conf()
-        await self._run("systemctl reload-or-restart smb")
+        await self._run("systemctl try-reload-or-restart smb")
         await self._run("smbcontrol all reload-config")
         decky.logger.info("smb restarted because of remove share")
         return {"success": True}
@@ -322,7 +322,7 @@ class Plugin:
         self.settings["shares"] = shares
         self._save_setting()
         await self._write_smb_conf()
-        await self._run("systemctl reload-or-restart smb")
+        await self._run("systemctl try-reload-or-restart smb")
         await self._run("smbcontrol all reload-config")
         return {"success": True}
 
