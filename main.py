@@ -255,7 +255,7 @@ class Plugin:
 
         shares = self.settings.get("shares", [])
         for s in shares:
-            if s["name"] == name:
+            if s["name"].lower() == name.lower():
                 return {"success": False, "error": f"Share '{name}' already exists"}
 
         shares.append({"name": name, "path": path, "enabled": True})
