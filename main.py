@@ -375,6 +375,7 @@ class Plugin:
         lines = [
             "[global]",
             f" netbios name = {netbios}",
+            " logging = systemd",
             ""
         ]
 
