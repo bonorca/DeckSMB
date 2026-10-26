@@ -185,7 +185,7 @@ class Plugin:
 
     async def uninstall_samba(self) -> dict:
         try:
-            for service in ["smb", "wsdd", "avahi-daemon", "avahi-daemon.socket"]:
+            for service in ["smb", "wsdd"]:
                 await self._run(f"systemctl stop {service}")
                 await self._run(f"systemctl disable {service}")
 
@@ -231,9 +231,6 @@ class Plugin:
             await self._run("systemctl start avahi-daemon")
         else:
             await self._remove_avahi_service()
-            for svc in ["avahi-daemon", "avahi-daemon.socket"]:
-                await self._run(f"systemctl stop {svc}")
-                await self._run(f"systemctl disable {svc}")
         return {"success": True}
 
     async def list_dirs(self, path: str) -> dict:
