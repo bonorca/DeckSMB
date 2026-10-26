@@ -102,10 +102,10 @@ class Plugin:
             steps.append("readonly_disabled")
 
             await decky.emit("install_progress", "Configuring pacman...")
-            await self._run(r"sed -i '/^SigLevel[[:space:]]*=[[:space:]]*Required DatabaseOptional/s/^/#/' /etc/pacman.conf")
-            await self._run(r"sed -i '/^#SigLevel[[:space:]]*=[[:space:]]*Required DatabaseOptional/a\SigLevel = TrustAll' /etc/pacman.conf")
+            await self._run(r"sed -i '/^SigLevel = TrustAll$/d' /etc/pacman.conf")
+            await self._run(r"sed -i 's/^#\(SigLevel[[:space:]]*=[[:space:]]*Required DatabaseOptional\)/\1/' /etc/pacman.conf")
             await self._run("pacman-key --init")
-            await self._run("pacman-key --populate archlinux")
+            await self._run("pacman-key --populate archlinux holo")
 
             # smb install
             await decky.emit("install_progress", "Installing samba package...")
