@@ -367,9 +367,6 @@ class Plugin:
 
     # config write
 
-    async def _remove_avahi_service(self):
-        self._remove_file("/etc/avahi/services/smb.service")
-
     async def _write_smb_conf(self):
         netbios = self.settings.get("netbios_name", "steamdeck")
         shares = self.settings.get("shares", [])
@@ -418,21 +415,6 @@ class Plugin:
 
         await self._run("systemctl daemon-reload")
         return True
-
-    async def _write_avahi_service(self):
-
-        content = (
-            '<?xml version="1.0" standalone=\'no\'?>\n'
-            '<!DOCTYPE service-group SYSTEM "avahi-service.dtd">\n'
-            "<service-group>\n"
-            '  <name replace-wildcards="yes">%h</name>\n'
-            "  <service>\n"
-            "    <type>_smb._tcp</type>\n"
-            "    <port>445</port>\n"
-            "  </service>\n"
-            "</service-group>\n"
-        )
-        self._write_file("/etc/avahi/services/smb.service", content)
 
     async def _write_dnssd_service(self):
         content = (
