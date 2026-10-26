@@ -167,8 +167,6 @@ class Plugin:
                 await self._run("systemctl enable wsdd")
                 await self._run("systemctl start wsdd")
 
-            await self._run("systemctl enable avahi-daemon")
-            await self._run("systemctl start avahi-daemon")
             steps.append("services_started")
 
             await decky.emit("install_progress", "Installation complete!")
@@ -201,6 +199,7 @@ class Plugin:
             self._remove_file("/etc/samba/smb.conf")
             self._remove_file("/etc/avahi/services/smb.service")
             self._remove_file("/etc/systemd/system/wsdd.service")
+            await self._remove_dnssd_service()
 
             await self._run("systemctl daemon-reload")
 
@@ -226,11 +225,9 @@ class Plugin:
         await self._run(f"systemctl {boot_action} wsdd")
 
         if enable:
-            await self._write_avahi_service()
-            await self._run("systemctl enable avahi-daemon")
-            await self._run("systemctl start avahi-daemon")
+            await self._write_dnssd_service()
         else:
-            await self._remove_avahi_service()
+            await self._remove_dnssd_service()
         return {"success": True}
 
     async def list_dirs(self, path: str) -> dict:
@@ -338,8 +335,6 @@ class Plugin:
         return {"success": True}
 
     async def _repair_discovery(self):
-        await self._write_avahi_service()
-
         if os.path.exists(self.wsdd_path) and not os.path.exists("/etc/systemd/system/wsdd.service"):
             await self._install_wsdd()
 
@@ -347,10 +342,8 @@ class Plugin:
         if smb_state != "active":
             return
 
-        await self._run("systemctl enable avahi-daemon")
-        _, out, _ = await self._run("systemctl is-active avahi-daemon")
-        if out != "active":
-            await self._run("systemctl start avahi-daemon")
+        if not os.path.exists("/etc/systemd/dnssd/smb.dnssd"):
+            await self._write_dnssd_service()
         if os.path.exists("/etc/systemd/system/wsdd.service"):
             await self._run("systemctl enable wsdd")
             _, out, _ = await self._run("systemctl is-active wsdd")
@@ -361,7 +354,7 @@ class Plugin:
     async def _stop_discovery(self):
         await self._run("systemctl stop wsdd")
         await self._run("systemctl disable wsdd")
-        self._remove_file("/etc/avahi/services/smb.service")
+        await self._remove_dnssd_service()
 
     async def check_and_repair(self) -> dict:
         rc, _, _ = await self._run("which smbd")
@@ -441,6 +434,21 @@ class Plugin:
         )
         self._write_file("/etc/avahi/services/smb.service", content)
 
+    async def _write_dnssd_service(self):
+        content = (
+            "[Service]\n"
+            "Name=%H\n"
+            "Type=_smb._tcp\n"
+            "Port=445\n"
+        )
+        self._write_file("/etc/systemd/dnssd/smb.dnssd", content)
+        await self._run("systemctl reload-or-restart systemd-resolved")
+
+    async def _remove_dnssd_service(self):
+        if os.path.exists("/etc/systemd/dnssd/smb.dnssd"):
+            self._remove_file("/etc/systemd/dnssd/smb.dnssd")
+            await self._run("systemctl reload-or-restart systemd-resolved")
+
     # helpers
 
     @staticmethod
@@ -491,5 +499,5 @@ class Plugin:
 
     async def _setup_discovery(self):
 
-        await self._write_avahi_service()
+        await self._write_dnssd_service()
         await self._install_wsdd()
