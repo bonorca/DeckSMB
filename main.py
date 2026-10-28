@@ -153,7 +153,8 @@ class Plugin:
             if os.path.exists(self.hash_path):
                 with open(self.hash_path, "r") as f:
                     nt_hash = f.read().strip()
-                await self._run(f"pdbedit -u deck --set-nt-hash={nt_hash}", log=False)
+                rc, _, _ = await self._run(f"pdbedit -u deck --set-nt-hash={nt_hash}", log=False)
+                decky.logger.info(f"restore password: rc={rc}")
             steps.append("password_set")
 
             await decky.emit("install_progress", "Configuring firewall...")
