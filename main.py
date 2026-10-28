@@ -384,6 +384,7 @@ class Plugin:
             "[global]",
             f" netbios name = {netbios}",
             " logging = systemd",
+            " log level = 1 auth_audit:3",
             ""
         ]
 
