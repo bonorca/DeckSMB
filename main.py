@@ -45,7 +45,7 @@ class Plugin:
         decky.logger.info("Goodbye World!")
         pass
 
-    async def _run(self, cmd: str) -> tuple[int, str, str]:
+    async def _run(self, cmd: str, log: bool = True) -> tuple[int, str, str]:
         process = await asyncio.create_subprocess_shell(
             cmd,
             env=self._clean_env(),
@@ -54,6 +54,9 @@ class Plugin:
         )
         stdout, stderr = await process.communicate()
         assert process.returncode is not None
+        if log and process.returncode != 0:
+            decky.logger.warning(
+                f"cmd failed: {cmd} rc={process.returncode} stderr={stderr.decode().strip()}")
         return process.returncode, stdout.decode().strip(), stderr.decode().strip()
 
     async def get_smb_status(self) -> dict:
@@ -150,7 +153,7 @@ class Plugin:
             if os.path.exists(self.hash_path):
                 with open(self.hash_path, "r") as f:
                     nt_hash = f.read().strip()
-                await self._run(f"pdbedit -u deck --set-nt-hash={nt_hash}")
+                await self._run(f"pdbedit -u deck --set-nt-hash={nt_hash}", log=False)
             steps.append("password_set")
 
             await decky.emit("install_progress", "Configuring firewall...")
