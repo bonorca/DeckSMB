@@ -7,6 +7,8 @@ from typing import Optional
 import decky
 import asyncio
 import json
+import shlex
+import time
 
 
 class Plugin:
@@ -373,6 +375,48 @@ class Plugin:
             return {"repaired": True}
         await self._stop_discovery()
         return {"repaired": False}
+
+    async def export_logs(self) -> dict:
+        try:
+            lines = [
+                f"DeckSMB {decky.DECKY_PLUGIN_VERSION}, Decky {decky.DECKY_VERSION}",
+                f"password backup: {os.path.exists(self.hash_path)}",
+                f"settings: {json.dumps(self.settings)}",
+                "",
+            ]
+            cmds = [
+                "cat /etc/os-release",
+                "uname -r",
+                "smbd -V",
+                "systemctl status smb wsdd systemd-resolved firewalld --no-pager",
+                "cat /etc/samba/smb.conf",
+                "testparm -s",
+                "pdbedit -L",
+                "ip -4 -br addr",
+                "ss -ltunp '( sport = :445 or sport = :139 or sport = :5357 or sport = :3702 )'",
+                "firewall-cmd --get-active-zones",
+                "firewall-cmd --zone=public --list-all",
+                "pacman-conf SigLevel",
+                "journalctl -u smb -u wsdd --no-pager -n 300",
+            ]
+            for share in self.settings.get("shares", []):
+                cmds.append(f"ls -ld {shlex.quote(share['path'])}")
+            for cmd in cmds:
+                rc, out, err = await self._run(cmd, log=False)
+                lines.append(f"$ {cmd} (rc={rc})")
+                lines.extend([s for s in (out, err) if s])
+                lines.append("")
+            for name in sorted(os.listdir(decky.DECKY_PLUGIN_LOG_DIR))[-3:]:
+                with open(os.path.join(decky.DECKY_PLUGIN_LOG_DIR, name), "r") as f:
+                    lines.extend([f"$ cat {name}", f.read(), ""])
+            path = time.strftime("/home/deck/Downloads/DeckSMB-log-%Y%m%d-%H%M%S.txt")
+            self._write_file(path, "\n".join(lines))
+            await self._run(f"chown deck:deck {path}")
+            decky.logger.info(f"logs exported to {path}")
+            return {"success": True, "path": path}
+        except Exception as e:
+            decky.logger.error(f"Export logs failed: {e}")
+            return {"success": False, "error": str(e)}
 
     # config write
 
