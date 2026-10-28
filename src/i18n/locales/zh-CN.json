@@ -47,5 +47,11 @@
     "title": "正在卸载 Samba",
     "status": "状态",
     "removing": "正在移除和清理..."
+  },
+  "logs": {
+    "export": "导出日志",
+    "exporting": "导出中...",
+    "saved": "已保存到 {{path}}",
+    "failed": "导出日志失败"
   }
 }

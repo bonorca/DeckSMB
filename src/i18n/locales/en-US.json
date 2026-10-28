@@ -47,5 +47,11 @@
     "title": "Uninstalling Samba",
     "status": "Status",
     "removing": "Removing and cleaning..."
+  },
+  "logs": {
+    "export": "Export Logs",
+    "exporting": "Exporting...",
+    "saved": "Saved to {{path}}",
+    "failed": "Failed to export logs"
   }
 }

@@ -18,7 +18,7 @@ import {
   definePlugin,
 } from "@decky/api";
 import { useState, useEffect, Fragment, FC } from "react";
-import { FaNetworkWired, FaTrash, FaPlus, FaKey } from "react-icons/fa";
+import { FaNetworkWired, FaTrash, FaPlus, FaKey, FaFileAlt } from "react-icons/fa";
 import { t, loadTranslations } from "./i18n/translations";
 
 interface DiscoveryStatus {
@@ -57,6 +57,36 @@ const removeShare = callable<[string], Result>("remove_share");
 const toggleShare = callable<[string, boolean], Result>("toggle_share");
 const setSambaPassword = callable<[string], Result>("set_smb_password");
 const checkAndRepair = callable<[], Result>("check_and_repair");
+const exportLogs = callable<[], Result>("export_logs");
+
+const ExportLogsButton: FC = () => {
+  const [exporting, setExporting] = useState(false);
+  const [info, setInfo] = useState("");
+
+  const handleExport = async () => {
+    setExporting(true);
+    const result = await exportLogs();
+    setInfo(result.success ? t("logs.saved", { path: String(result.path) }) : result.error || t("logs.failed"));
+    setExporting(false);
+  };
+
+  return (
+    <Fragment>
+      <PanelSectionRow>
+        <ButtonItem layout="below" onClick={handleExport} disabled={exporting}>
+          <FaFileAlt /> {exporting ? t("logs.exporting") : t("logs.export")}
+        </ButtonItem>
+      </PanelSectionRow>
+      {info && (
+        <PanelSectionRow>
+          <div style={{ fontSize: "11px", opacity: 0.8, padding: "0 16px", wordBreak: "break-all" }}>
+            {info}
+          </div>
+        </PanelSectionRow>
+      )}
+    </Fragment>
+  );
+};
 
 const InstallPanel: FC<{ onInstalled: () => void }> = ({ onInstalled }) => {
   const [installing, setInstalling] = useState(false);
@@ -107,6 +137,7 @@ const InstallPanel: FC<{ onInstalled: () => void }> = ({ onInstalled }) => {
           <Field label={t("install.error")}>{error}</Field>
         </PanelSectionRow>
       )}
+      <ExportLogsButton />
       <PanelSectionRow>
         <div style={{ fontSize: "11px", opacity: 0.8, padding: "0 16px", marginTop: "8px" }}>
           {t("install.note")}
@@ -402,6 +433,7 @@ const Content: FC = () => {
             <FaKey /> {t("server.changePassword")}
           </ButtonItem>
         </PanelSectionRow>
+        <ExportLogsButton />
         <style>{`.decksmb-danger .DialogButton { color: #f44 !important; }`}</style>
         <div className="decksmb-danger">
           <PanelSectionRow>
