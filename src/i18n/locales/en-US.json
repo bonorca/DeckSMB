@@ -34,6 +34,7 @@
     "starting": "Starting...",
     "running": "Running",
     "stopped": "Stopped",
+    "username": "Username",
     "addFolders": "Add Folders",
     "changePassword": "Change Password",
     "changePasswordTitle": "Change SMB Password",

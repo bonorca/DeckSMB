@@ -381,6 +381,9 @@ const Content: FC = () => {
             }}
           />
         </PanelSectionRow>
+        <PanelSectionRow>
+          <Field label={t("server.username")}>deck</Field>
+        </PanelSectionRow>
         <AddSharePanel onAdded={refresh} />
         <PanelSectionRow>
           <ButtonItem layout="below" onClick={() => showModal(

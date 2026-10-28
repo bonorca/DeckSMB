@@ -34,6 +34,7 @@
     "starting": "启动中...",
     "running": "运行中",
     "stopped": "已停止",
+    "username": "用户名",
     "addFolders": "添加文件夹",
     "changePassword": "更改密码",
     "changePasswordTitle": "更改 SMB 密码",
