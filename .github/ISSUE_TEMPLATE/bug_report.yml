@@ -1,0 +1,62 @@
+name: Bug report / 问题反馈
+description: Something doesn't work
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening an issue, open DeckSMB and tap **Export Logs**. The file is saved to `~/Downloads`.
+        提交前请先在插件里点 **导出日志**，文件保存在 `~/Downloads`。English or 中文 are both fine.
+  - type: input
+    id: plugin-version
+    attributes:
+      label: DeckSMB version / 插件版本
+      description: Decky → Settings → Plugins
+      placeholder: "1.0.3"
+    validations:
+      required: true
+  - type: input
+    id: steamos-version
+    attributes:
+      label: SteamOS version / SteamOS 版本
+      description: Settings → System
+      placeholder: "3.9.5"
+    validations:
+      required: true
+  - type: dropdown
+    id: client-os
+    attributes:
+      label: Connecting from / 客户端系统
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS / iPadOS
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: Client version and app / 系统版本和 App
+      placeholder: "Windows 11 24H2, File Explorer"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened / 问题描述
+      description: Steps to reproduce and the exact error message.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / 日志
+      description: Drag the exported DeckSMB-log-*.txt here. It has no passwords, but it does contain folder names and local IP addresses, so take a quick look first.
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / 截图
+      description: Drag images here.
