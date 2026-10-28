@@ -26,28 +26,26 @@ A [Decky Loader](https://decky.xyz/) plugin to set up  a Samba/SMB server on Ste
    - Should appear immediately in File Explorer under Network
    - If not, try: `smb://steamdeck.local`
 
-**Default credentials:**
-- Username: `deck`
-- Password: `0000`
+> [!IMPORTANT]
+> **Default credentials:** \
+> Username: `deck` \
+> Password: `0000` 
 
 > **Note:** SteamOS updates will remove Samba due to its immutable filesystem. You will need to reinstall after each system update. Your shares and password will be preserved.
 
 ### After changing the Samba password
 
-By design, Samba won't disconnect you immediately after changing your password. To see the change take effect, toggle the SMB service once, and the new credentials will be required.
+Samba won't disconnect you immediately after changing your password. To see the change take effect, toggle the SMB service once, and the new credentials will be required.
 
-Windows caches SMB credentials. If you change your Samba password, Windows will still try the old one and fail with "access denied". To fix this, open CMD or Powershell and run:
+Windows caches SMB credentials. If you change your Samba password, Windows will still try the old one and fail with "access denied". To fix this, open CMD or PowerShell and run:
 ```cmd
-net use \\steamdeck /delete
+net use
+```
+Find the entry for your Steam Deck (e.g. `\\STEAMDECK\IPC$`) and delete it:
+```cmd
+net use \\STEAMDECK\IPC$ /delete
 ```
 Then reconnect and enter the new password.
-
-### Access denied?
-
-- Log in as `deck`. Guest / anonymous access is not supported.
-- On 1.0.1 or earlier, the default password may not have been set. Use **Change Password** in the plugin once.
-- macOS: choose **Registered User**, not Guest.
-- Windows: clear cached credentials as shown above.
 
 ## Feedback
 
