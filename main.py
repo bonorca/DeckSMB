@@ -145,6 +145,8 @@ class Plugin:
             stdout, stderr = await process.communicate(input=b"0000\n0000\n")
             decky.logger.info(
                 f"default password result: rc={process.returncode}, stdout={stdout.decode().strip()}, stderr={stderr.decode().strip()}")
+            if process.returncode != 0:
+                return {"success": False, "error": f"Failed to set default password: {stderr.decode().strip()}"}
             if os.path.exists(self.hash_path):
                 with open(self.hash_path, "r") as f:
                     nt_hash = f.read().strip()
