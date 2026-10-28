@@ -1,6 +1,6 @@
 {
   "name": "deck-smb",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Decky plugin to set up a Samba/SMB server on Steam Deck for file sharing — all from Game Mode.",
   "type": "module",
   "scripts": {
