@@ -43,9 +43,16 @@ net use \\steamdeck /delete
 
 然后重新连接并输入新密码。
 
+### 访问被拒绝？
+
+- 用户名填 `deck`，不支持访客 / 匿名登录。
+- 1.0.1 及更早版本安装时可能没设上默认密码，在插件里 **更改密码** 一次即可。
+- macOS：选择 **注册用户**，不要选访客。
+- Windows：按上面的方法清除缓存的凭据。
+
 ## 反馈
 
-如果遇到任何问题，欢迎提交 issue。
+如果遇到任何问题，欢迎提交 [issue](https://github.com/bonorca/DeckSMB/issues/new/choose)。请先在插件里点 **导出日志**，并附上 `~/Downloads` 里生成的文件。
 
 ## 许可证
 

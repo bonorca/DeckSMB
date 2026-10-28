@@ -42,9 +42,16 @@ net use \\steamdeck /delete
 ```
 Then reconnect and enter the new password.
 
+### Access denied?
+
+- Log in as `deck`. Guest / anonymous access is not supported.
+- On 1.0.1 or earlier, the default password may not have been set. Use **Change Password** in the plugin once.
+- macOS: choose **Registered User**, not Guest.
+- Windows: clear cached credentials as shown above.
+
 ## Feedback
 
-Feel free to open an issue if you encounter any problems.
+Feel free to open an [issue](https://github.com/bonorca/DeckSMB/issues/new/choose) if you encounter any problems. Please tap **Export Logs** in the plugin first and attach the file from `~/Downloads`.
 
 ## License
 
