@@ -5,6 +5,10 @@
   </br>
 </h1>
 
+<p align="center">
+  <a href="https://github.com/bonorca/DeckSMB/releases"><img src="https://img.shields.io/github/downloads/bonorca/DeckSMB/total" alt="Downloads"/></a>
+</p>
+
 A [Decky Loader](https://decky.xyz/) plugin to set up  a Samba/SMB server on Steam Deck for file sharing — all from Game Mode.
 
 [中文](README_cn.md)

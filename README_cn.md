@@ -5,6 +5,10 @@
   </br>
 </h1>
 
+<p align="center">
+  <a href="https://github.com/bonorca/DeckSMB/releases"><img src="https://img.shields.io/github/downloads/bonorca/DeckSMB/total" alt="Downloads"/></a>
+</p>
+
 一个 [Decky Loader](https://decky.xyz/) 插件，用于在 Steam Deck 上搭建 Samba/SMB 服务器以实现文件共享——全程在游戏模式下完成。
 
 ## 功能
